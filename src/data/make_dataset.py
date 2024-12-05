@@ -62,8 +62,8 @@ for f in files:
         df["set"] = gyr_set
         gyr_set += 1
         gyr_df = pd.concat([gyr_df, df])
-        
-    
+
+
 # --------------------------------------------------------------
 # Working with datetimes
 # --------------------------------------------------------------
@@ -87,10 +87,10 @@ del gyr_df["elapsed (s)"]
 
 files = glob("../../data/raw/MetaMotion/*.csv")
 
+
 def read_data_from_files(files):
-    
     data_path = "../../data/raw/MetaMotion\\"
-    
+
     acc_df = pd.DataFrame()
     gyr_df = pd.DataFrame()
 
@@ -117,7 +117,7 @@ def read_data_from_files(files):
             df["set"] = gyr_set
             gyr_set += 1
             gyr_df = pd.concat([gyr_df, df])
-    
+
     acc_df.index = pd.to_datetime(acc_df["epoch (ms)"], unit="ms")
     gyr_df.index = pd.to_datetime(gyr_df["epoch (ms)"], unit="ms")
 
@@ -128,17 +128,17 @@ def read_data_from_files(files):
     del gyr_df["epoch (ms)"]
     del gyr_df["time (01:00)"]
     del gyr_df["elapsed (s)"]
-    
+
     return acc_df, gyr_df
+
 
 acc_df, gyr_df = read_data_from_files(files)
 
-            
 
 # --------------------------------------------------------------
 # Merging datasets
 # --------------------------------------------------------------
-data_merged = pd.concat([acc_df.iloc[:,:3], gyr_df], axis = 1)
+data_merged = pd.concat([acc_df.iloc[:, :3], gyr_df], axis=1)
 
 data_merged.columns = [
     "acc_x",
@@ -184,7 +184,11 @@ data_resampled = pd.concat(
 )
 
 data_resampled.info()
-data_resampled['category'] = data_resampled['category'].map({'heavy3': 'heavy', 'medium3': 'medium'}).fillna(data_resampled['category'])
+data_resampled["category"] = (
+    data_resampled["category"]
+    .map({"heavy3": "heavy", "medium3": "medium"})
+    .fillna(data_resampled["category"])
+)
 
 data_resampled["set"] = data_resampled["set"].astype(int)
 
@@ -193,3 +197,4 @@ data_resampled["set"] = data_resampled["set"].astype(int)
 # --------------------------------------------------------------
 
 data_resampled.to_pickle("../../data/interim/01_data_processed.pkl")
+
